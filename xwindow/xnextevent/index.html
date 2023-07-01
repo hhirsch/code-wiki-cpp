@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Next Event - C++ Code Wiki</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Next Event";
+        var mkdocs_page_input_path = "xwindow/xnextevent.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <script src="../../js/jquery-3.6.0.min.js" defer></script>
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+      <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> C++ Code Wiki
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Basics</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../io/">Input & Output</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">X Window System</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../xsendevent/">Send Event</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Next Event</a>
+    <ul class="current">
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">C++ Code Wiki</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a> &raquo;</li>
+          <li>X Window System &raquo;</li>
+      <li>Next Event</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="xsendevent">XSendEvent</h1>
+<p>main.cpp</p>
+<pre><code class="language-cpp">#include &lt;stdio.h&gt;
+#include &lt;X11/Xlib.h&gt;
+#include &lt;X11/Xutil.h&gt;
+#include &lt;iostream&gt;
+#include &lt;iomanip&gt;
+
+int main() {
+  Display* display = XOpenDisplay(NULL);
+  Window rootWindow = DefaultRootWindow(display);
+  std::cout &lt;&lt; &quot;Initialized&quot; &lt;&lt; std::endl;
+  // Enable KeyPress and KeyRelease events on the root window
+  Window focusedWindow;
+  int revertTo;
+  XGetInputFocus(display, &amp;focusedWindow, &amp;revertTo);
+
+  XSelectInput(display, focusedWindow, KeyPressMask | KeyReleaseMask);
+
+  while(1) {
+    XEvent event;
+    XNextEvent(display, &amp;event);
+    if (event.type == KeyPress) {
+      // Log the key press event
+      // If you convert to hex you will notice that these  are different from the hex keycodes and
+      // states in /usr/include/X11/keysymdef.h
+      // You need &quot;XLookupKeysym&quot;&quot; or &quot;XKeycodeToKeysym&quot; to convert them
+      printf(&quot;Key Press: keycode=%u, state=%u\n&quot;, event.xkey.keycode, event.xkey.state);
+    } else if (event.type == KeyRelease) {
+      // Log the key release event
+      printf(&quot;Key Release: keycode=%u, state=%u\n&quot;, event.xkey.keycode, event.xkey.state);
+    }
+  }
+
+  XCloseDisplay(display);
+  return 0;
+}
+</code></pre>
+<p>CMakeLists.txt</p>
+<pre><code class="language-cmake">cmake_minimum_required(VERSION 3.10)
+project(xnextevent)
+
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+find_package(X11 REQUIRED)
+INCLUDE_DIRECTORIES(${X11_INCLUDE_DIRS})
+add_executable(xnextevent main.cpp)
+target_link_libraries(${PROJECT_NAME} ${X11_LIBRARIES})
+</code></pre>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../xsendevent/" class="btn btn-neutral float-left" title="Send Event"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../xsendevent/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+  </span>
+</div>
+    <script>var base_url = '../..';</script>
+    <script src="../../js/theme_extra.js" defer></script>
+    <script src="../../js/theme.js" defer></script>
+      <script src="../../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>
