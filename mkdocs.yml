@@ -1,0 +1,10 @@
+site_name: C++ Code Wiki
+markdown_extensions:
+    - pymdownx.snippets
+nav:
+    - Home: index.md
+    - 'Basics':
+        - Input & Output: io.md
+    - 'X Window System':
+        - Send Event: xwindow/xsendevent.md
+theme: readthedocs
