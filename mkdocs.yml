@@ -7,4 +7,5 @@ nav:
         - Input & Output: io.md
     - 'X Window System':
         - Send Event: xwindow/xsendevent.md
+        - Next Event: xwindow/xnextevent.md
 theme: readthedocs
