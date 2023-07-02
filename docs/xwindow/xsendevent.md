@@ -1,5 +1,4 @@
 # XSendEvent
-
 main.cpp
 ```cpp
 --8<-- "source/xwindow/xlib/xsendevent/main.cpp"

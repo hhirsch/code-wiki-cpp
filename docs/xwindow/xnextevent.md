@@ -1,4 +1,4 @@
-# XSendEvent
+# XNextEvent
 
 main.cpp
 ```cpp

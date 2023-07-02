@@ -19,14 +19,27 @@ int main() {
     XEvent event;
     XNextEvent(display, &event);
     if (event.type == KeyPress) {
-      // Log the key press event
       // If you convert to hex you will notice that these  are different from the hex keycodes and
       // states in /usr/include/X11/keysymdef.h
       // You need "XLookupKeysym"" or "XKeycodeToKeysym" to convert them
-      printf("Key Press: keycode=%u, state=%u\n", event.xkey.keycode, event.xkey.state);
+      std::cout << "Key Press" << std::endl;
     } else if (event.type == KeyRelease) {
-      // Log the key release event
-      printf("Key Release: keycode=%u, state=%u\n", event.xkey.keycode, event.xkey.state);
+      std::cout << "Key Release" << std::endl;
+    }
+    if (event.type == KeyPress || event.type == KeyRelease) {
+      std::cout << "keycode=" << event.xkey.keycode << ", state=" << event.xkey.state << std::endl;
+      KeySym keysymKey;
+      keysymKey = XKeycodeToKeysym(display, event.xkey.keycode, 0);
+      if (keysymKey != NoSymbol) {
+        std::cout << "Keysym Keycode: " << XKeysymToString(keysymKey) << std::endl;
+      }
+
+      KeySym keysymState;
+      keysymState = XKeycodeToKeysym(display, event.xkey.state, 0);
+      if (keysymState != NoSymbol) {
+        std::cout << "Keysym State: " << XKeysymToString(keysymState) << std::endl;
+      }
+      std::cout << std::endl << std::endl;
     }
   }
 
